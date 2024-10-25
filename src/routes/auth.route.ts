@@ -1,7 +1,7 @@
 import { Router } from "express"
 
 import { login, logout } from "../controllers/auth.controller"
-import { doesUserExists } from "../middleware/user.middleware"
+import { doesUserExists } from "../middleware/auth.middleware"
 
 const router = Router()
 

@@ -4,6 +4,7 @@ import { verify, JwtPayload } from "jsonwebtoken"
 import { Request, Response, NextFunction } from "express"
 
 import { config } from "../utils/config/env"
+import prisma from "../utils/config/prismaClient"
 
 export const authMiddleware = (
   request: Request,
@@ -40,4 +41,21 @@ export const authMiddleware = (
       )
     }
   }
+}
+
+export const doesUserExists = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  const { email } = request.body
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  })
+
+  if (!existingUser) {
+    return next(createHttpError(StatusCodes.BAD_REQUEST, "User doesnot exist!"))
+  }
+
+  next()
 }
