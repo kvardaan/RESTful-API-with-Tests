@@ -6,6 +6,6 @@ import { doesUserExists } from "../middleware/auth.middleware"
 const router = Router()
 
 router.post("/login", doesUserExists, login)
-router.post("/logout", doesUserExists, logout)
+router.post("/logout", logout)
 
 export { router as authRoutes }

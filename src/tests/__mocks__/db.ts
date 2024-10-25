@@ -1,5 +1,4 @@
-import { beforeEach } from "vitest"
 import { PrismaClient } from "@prisma/client"
-import { mockDeep, mockReset } from "vitest-mock-extended"
+import { mockDeep } from "vitest-mock-extended"
 
 export const prismaClient = mockDeep<PrismaClient>()
