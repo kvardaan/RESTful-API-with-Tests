@@ -7,7 +7,10 @@ import {
   editPostWithId,
   removePostWithId,
 } from "../controllers/post.controller"
-import { validatedPost } from "../middleware/post.middleware"
+import {
+  doesPostExistWithId,
+  validatedPost,
+} from "../middleware/post.middleware"
 import { authMiddleware } from "../middleware/auth.middleware"
 
 const router = Router()
@@ -17,7 +20,7 @@ router.use(authMiddleware)
 router.get("/", getPosts)
 router.get("/:id", getPostWithId)
 router.post("/", validatedPost, addPost)
-router.patch("/:id", validatedPost, editPostWithId)
-router.delete("/:id", removePostWithId)
+router.patch("/:id", doesPostExistWithId, validatedPost, editPostWithId)
+router.delete("/:id", doesPostExistWithId, removePostWithId)
 
 export { router as postRoutes }

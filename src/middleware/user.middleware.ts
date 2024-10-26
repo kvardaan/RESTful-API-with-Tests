@@ -46,7 +46,7 @@ export const userAlreadyExists = async (
   next()
 }
 
-export const doesUserExists = async (
+export const doesUserExistWithId = async (
   request: Request,
   response: Response,
   next: NextFunction

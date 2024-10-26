@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
+    "test:integration": "cd ./scripts && run-integration.sh",
     "build": "tsc -b",
     "start": "node ./dist/server.js",
     "db:generate": "prisma generate",

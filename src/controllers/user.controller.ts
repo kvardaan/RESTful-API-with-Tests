@@ -82,17 +82,18 @@ export const editUserWithId = async (
   response: Response,
   next: NextFunction
 ) => {
+  const { id } = request.params
   const { email, name } = request.body
 
   try {
     const newUser = await prisma.user.update({
-      where: { email },
-      data: { name },
+      where: { id: Number(id) },
+      data: { email, name },
     })
 
     response
       .status(StatusCodes.CREATED)
-      .json({ message: `'${newUser.name}' edited successfully` })
+      .json({ message: `User edited successfully` })
   } catch (error) {
     return next(
       createHttpError(

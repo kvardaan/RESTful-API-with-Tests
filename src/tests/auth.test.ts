@@ -4,8 +4,6 @@ import { describe, it, expect, vi } from "vitest"
 
 import app from "../app"
 
-vi.mock("./__mocks__/db")
-
 describe("POST /login - login", () => {
   it("Error - when user doesn't exist", async () => {
     const response = await request(app).post("/api/v1/auth/login").send({
