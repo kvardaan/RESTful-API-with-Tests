@@ -1,14 +1,14 @@
-import bcrypt from "bcryptjs"
+import { hash } from "bcryptjs"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 async function main() {
   // Create users
-  const user1 = await prisma?.user.create({
+  const user1 = await prisma.user.create({
     data: {
       email: "alice@example.com",
-      password: await bcrypt.hash("alice", 10),
+      password: await hash("alice", 10),
       name: "Alice",
       posts: {
         create: [
@@ -27,10 +27,10 @@ async function main() {
     },
   })
 
-  const user2 = await prisma?.user.create({
+  const user2 = await prisma.user.create({
     data: {
       email: "bob@example.com",
-      password: await bcrypt.hash("bob", 10),
+      password: await hash("bob", 10),
       name: "Bob",
       posts: {
         create: [
@@ -44,7 +44,7 @@ async function main() {
     },
   })
 
-  console.log({ user1, user2 })
+  console.log(`Created ${user1?.email} and ${user2?.email}`)
 }
 
 main()

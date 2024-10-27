@@ -1,14 +1,23 @@
 import request from "supertest"
 import { StatusCodes } from "http-status-codes"
-import { describe, it, expect, vi } from "vitest"
+import { describe, it, expect, beforeAll } from "vitest"
 
 import app from "../app"
+import { hash } from "bcryptjs"
+import resetDB from "./helpers/resetDB"
+import { getRandomInt } from "./helpers/randomNo"
 
-describe("GET /:id - return user", () => {
+// GET /api/v1/users/:id - gets a user with ID
+describe("GET /api/v1/users/:id - return user", () => {
+  beforeAll(async () => {
+    console.log("Clearing DB")
+    await resetDB()
+  })
+
   let token = ""
   // authMiddleware
   it("Error - token is missing", async () => {
-    const response = await await request(app)
+    const response = await request(app)
       .get("/api/v1/user/1")
       .set("Authorization", token)
     expect(response.status).toBe(StatusCodes.UNAUTHORIZED)
@@ -38,7 +47,7 @@ describe("GET /:id - return user", () => {
   // doesUserExistWithId
   it("Error - user does not exist", async () => {
     const response = await request(app)
-      .get("/api/v1/user/4")
+      .get(`/api/v1/user/${getRandomInt()}`)
       .set("Authorization", `Bearer ${token}`)
     expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
@@ -54,7 +63,13 @@ describe("GET /:id - return user", () => {
   })
 })
 
-describe("POST / - register", () => {
+// POST /api/v1/users - adds a user
+describe("POST /api/v1/users - register", () => {
+  beforeAll(async () => {
+    console.log("Clearing DB")
+    await resetDB()
+  })
+
   // userAlreadyExists
   it("Error - when user already exists", async () => {
     const response = await request(app).post("/api/v1/user").send({
@@ -104,7 +119,13 @@ describe("POST / - register", () => {
   })
 })
 
-describe("PATCH /:id - edit user", () => {
+// PATCH /api/v1/users/:id - edits a user info
+describe("PATCH /api/v1/users/:id - edit user", () => {
+  beforeAll(async () => {
+    console.log("Clearing DB")
+    await resetDB()
+  })
+
   // authMiddleware
   it("Error - token is missing", async () => {
     const response = await request(app)
@@ -148,7 +169,7 @@ describe("PATCH /:id - edit user", () => {
   // doesUserExistWithId
   it("Error - user does not exist", async () => {
     const response = await request(app)
-      .patch("/api/v1/user/4")
+      .patch(`/api/v1/user/${getRandomInt()}`)
       .send({
         email: "alice@example.com",
         name: "Alice XYZ",
@@ -202,7 +223,7 @@ describe("PATCH /:id - edit user", () => {
       .send({
         email: "alice@example.com",
         name: "Alice XYZ",
-        password: "alicexyz123",
+        password: await hash("alicexyz123", 12),
       })
       .set("Authorization", `Bearer ${token}`)
     expect(response.status).toBe(StatusCodes.CREATED)
@@ -211,7 +232,13 @@ describe("PATCH /:id - edit user", () => {
   })
 })
 
-describe("Delete /:id - delete user", () => {
+// DELETE /api/v1/users/:id - removes a user
+describe("Delete /api/v1/users/:id - delete user", () => {
+  beforeAll(async () => {
+    console.log("Clearing DB")
+    await resetDB()
+  })
+
   // authMiddleware
   it("Error - token is missing", async () => {
     const response = await request(app)
@@ -245,7 +272,7 @@ describe("Delete /:id - delete user", () => {
   // doesUserExistWithId
   it("Error - user does not exist", async () => {
     const response = await request(app)
-      .delete("/api/v1/user/4")
+      .delete(`/api/v1/user/${getRandomInt()}`)
       .set("Authorization", `Bearer ${token}`)
     expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })

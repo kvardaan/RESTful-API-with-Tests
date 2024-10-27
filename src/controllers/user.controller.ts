@@ -1,25 +1,10 @@
-import bcrypt from "bcryptjs"
+import { hash } from "bcryptjs"
 import createHttpError from "http-errors"
 import { StatusCodes } from "http-status-codes"
 import { NextFunction, Request, Response } from "express"
 
 import { userType } from "../types/user.type"
 import prisma from "../utils/config/prismaClient"
-
-// GET /api/v1/users - get all the users
-export const getUsers = async (response: Response, next: NextFunction) => {
-  try {
-    const users = await prisma.user.findMany({
-      include: { posts: true },
-    })
-
-    response.status(StatusCodes.OK).json(users)
-  } catch (error) {
-    return next(
-      createHttpError(StatusCodes.INTERNAL_SERVER_ERROR, `Error: ${error}`)
-    )
-  }
-}
 
 // GET /api/v1/users/:id - gets a user with ID
 export const getUserWithId = async (
@@ -54,7 +39,7 @@ export const addUser = async (
   const userData: userType = request.body
 
   try {
-    const hashedPassword = await bcrypt.hash(userData.password, 12)
+    const hashedPassword = await hash(userData.password, 12)
 
     const newUser = await prisma.user.create({
       data: {
@@ -88,7 +73,7 @@ export const editUserWithId = async (
   try {
     const updatedUser = await prisma.user.update({
       where: { id: Number(id) },
-      data: { email, name, password: await bcrypt.hash(password, 12) },
+      data: { email, name, password: await hash(password, 12) },
     })
 
     response

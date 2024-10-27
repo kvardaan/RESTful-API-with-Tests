@@ -1,5 +1,5 @@
-import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import { compare } from "bcryptjs"
 import createHttpError from "http-errors"
 import { StatusCodes } from "http-status-codes"
 import { Request, Response, NextFunction } from "express"
@@ -20,10 +20,7 @@ export const login = async (
 
   try {
     if (user) {
-      const isPasswordValid = await bcrypt.compare(
-        userData.password,
-        user.password
-      )
+      const isPasswordValid = await compare(userData.password, user.password)
 
       if (!isPasswordValid) {
         return next(

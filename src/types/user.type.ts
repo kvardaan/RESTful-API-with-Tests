@@ -11,8 +11,8 @@ export const userSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be 8 or more characters long" })
-    .max(32, {
-      message: "Password must be 32 or less characters long",
+    .max(128, {
+      message: "Password must be 128 or less characters long",
     }),
 })
 
