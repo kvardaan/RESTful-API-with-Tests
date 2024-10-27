@@ -4,13 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "test:integration": "cd ./scripts && run-integration.sh",
+    "test:integration": "cd scripts && run-integration.sh",
     "build": "tsc -b",
     "start": "node ./dist/server.js",
     "db:generate": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:seed": "cd ./prisma && tsx seed.ts",
+    "db:seed": "cd ./src/utils && tsx seed.ts",
     "format": "prisma format",
     "studio": "prisma studio",
     "prettier": "npx prettier --write '**/*.{js,ts}'"

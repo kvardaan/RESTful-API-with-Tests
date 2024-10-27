@@ -15,15 +15,12 @@ import { authMiddleware } from "../middleware/auth.middleware"
 
 const router = Router()
 
-router.get("/:id", authMiddleware, doesUserExistWithId, getUserWithId)
 router.post("/", userAlreadyExists, validatedUser, addUser)
-router.patch(
-  "/:id",
-  authMiddleware,
-  doesUserExistWithId,
-  validatedUser,
-  editUserWithId
-)
-router.delete("/:id", authMiddleware, doesUserExistWithId, removeUserWithId)
+
+router.use(authMiddleware)
+
+router.get("/:id", doesUserExistWithId, getUserWithId)
+router.patch("/:id", doesUserExistWithId, validatedUser, editUserWithId)
+router.delete("/:id", doesUserExistWithId, removeUserWithId)
 
 export { router as userRoutes }

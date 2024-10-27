@@ -6,8 +6,12 @@ import { Request, Response, NextFunction } from "express"
 import { config } from "../utils/config/env"
 import prisma from "../utils/config/prismaClient"
 
+export interface AuthRequest extends Request {
+  id?: number
+}
+
 export const authMiddleware = (
-  request: Request,
+  request: AuthRequest,
   response: Response,
   next: NextFunction
 ) => {
@@ -21,11 +25,11 @@ export const authMiddleware = (
 
   try {
     const decoded = verify(token, config.JWT_SECRET) as JwtPayload
-    if (typeof decoded.id !== "string") {
+    if (typeof decoded.id === "string") {
       return next(createHttpError(StatusCodes.UNAUTHORIZED, "Invalid token"))
     }
 
-    request.cookies.id = decoded.id
+    request.id = decoded.id
     next()
   } catch (error: Error | any) {
     if (error.name === "TokenExpiredError") {

@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
 import createHttpError from "http-errors"
-import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
+import { NextFunction, Request, Response } from "express"
 
 import { userType } from "../types/user.type"
 import prisma from "../utils/config/prismaClient"
@@ -83,17 +83,17 @@ export const editUserWithId = async (
   next: NextFunction
 ) => {
   const { id } = request.params
-  const { email, name } = request.body
+  const { email, name, password } = request.body
 
   try {
-    const newUser = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: Number(id) },
-      data: { email, name },
+      data: { email, name, password: await bcrypt.hash(password, 12) },
     })
 
     response
       .status(StatusCodes.CREATED)
-      .json({ message: `User edited successfully` })
+      .json({ message: `User edited successfully`, updatedUser })
   } catch (error) {
     return next(
       createHttpError(
@@ -113,15 +113,25 @@ export const removeUserWithId = async (
   const { id } = request.params
 
   try {
-    const user = await prisma.user.delete({
-      where: { id: Number(id) },
-      include: { posts: true },
+    const deletePosts = prisma.post.deleteMany({
+      where: {
+        authorId: Number(id),
+      },
     })
+
+    const deleteUser = prisma.user.delete({
+      where: {
+        id: Number(id),
+      },
+    })
+
+    await prisma.$transaction([deletePosts, deleteUser])
 
     response
       .status(StatusCodes.OK)
-      .json({ message: `Deleted '${user.name}' successfully` })
+      .json({ message: `User deleted successfully` })
   } catch (error) {
+    console.log(error)
     return next(
       createHttpError(
         StatusCodes.INTERNAL_SERVER_ERROR,
