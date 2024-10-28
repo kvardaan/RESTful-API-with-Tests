@@ -21,6 +21,11 @@ jobs:
       - name: Set up Docker Compose
         uses: docker/setup-qemu-action@v3
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Ensure Docker Compose is available
         run: docker-compose version
 
