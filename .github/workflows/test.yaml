@@ -33,7 +33,7 @@ jobs:
         run: cp .env.example .env
 
       - name: Install required packages
-        run: npm run install
+        run: npm install
 
       - name: List files in scripts directory
         run: ls -la scripts
