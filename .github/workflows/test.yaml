@@ -32,5 +32,11 @@ jobs:
       - name: Copy .env.example to .env
         run: cp .env.example .env
 
+      - name: List files in scripts directory
+        run: ls -la scripts
+
+      - name: Make run-integration.sh executable
+        run: chmod +x scripts/run-integration.sh
+
       - name: Run tests
-        run: npm run test:integration
+        run: ./scripts/run-integration.sh
