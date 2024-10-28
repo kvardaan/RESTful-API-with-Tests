@@ -3,14 +3,15 @@ import { StatusCodes } from "http-status-codes"
 import { NextFunction, Request, Response } from "express"
 
 import prisma from "../utils/config/prismaClient"
+import { AuthRequest } from "../middleware/auth.middleware"
 
 // GET /api/v1/posts - get all the posts of a user
 export const getPosts = async (
-  request: Request,
+  request: AuthRequest,
   response: Response,
   next: NextFunction
 ) => {
-  const { id } = request.cookies
+  const id = request.id
 
   try {
     const posts = await prisma.post.findMany({
@@ -50,11 +51,11 @@ export const getPostWithId = async (
 
 // POST /api/v1/posts - adds a post
 export const addPost = async (
-  request: Request,
+  request: AuthRequest,
   response: Response,
   next: NextFunction
 ) => {
-  const { id } = request.cookies
+  const id = request.id
   const postData = request.body
 
   try {

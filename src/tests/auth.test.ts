@@ -5,40 +5,49 @@ import { describe, it, expect, beforeAll } from "vitest"
 import app from "../app"
 import resetDB from "./helpers/resetDB"
 
-describe("POST /login - login", () => {
+describe.sequential("Authentication Tests", () => {
   beforeAll(async () => {
-    console.log("Clearing DB")
+    console.log("Clearing DB for Authentication Tests")
     await resetDB()
   })
 
-  it("Error - when user doesn't exist", async () => {
-    const response = await request(app).post("/api/v1/auth/login").send({
-      email: "alice@test.com",
-      password: "alice",
+  // POST /api/v1/auth/login - user login
+  describe.sequential("POST /login - login", () => {
+    beforeAll(async () => {
+      console.log("Clearing DB")
+      await resetDB()
     })
-    expect(response.status).toBe(StatusCodes.BAD_REQUEST)
+
+    it("Error - when user doesn't exist", async () => {
+      const response = await request(app).post("/api/v1/auth/login").send({
+        email: "alice@test.com",
+        password: "alice",
+      })
+      expect(response.status).toBe(StatusCodes.BAD_REQUEST)
+    })
+
+    it("Error - when user credentials are wrong", async () => {
+      const response = await request(app).post("/api/v1/auth/login").send({
+        email: "alice@example.com",
+        password: "bob",
+      })
+      expect(response.status).toBe(StatusCodes.UNAUTHORIZED)
+    })
+
+    it("Login successfully", async () => {
+      const response = await request(app).post("/api/v1/auth/login").send({
+        email: "alice@example.com",
+        password: "alice",
+      })
+      expect(response.status).toBe(StatusCodes.OK)
+    })
   })
 
-  it("Error - when user credentials are wrong", async () => {
-    const response = await request(app).post("/api/v1/auth/login").send({
-      email: "alice@example.com",
-      password: "bob",
+  // POST /api/v1/auth/logout - user logout
+  describe.sequential("POST /logout - logout", () => {
+    it("Logout successfully", async () => {
+      const response = await request(app).post("/api/v1/auth/logout")
+      expect(response.status).toBe(StatusCodes.OK)
     })
-    expect(response.status).toBe(StatusCodes.UNAUTHORIZED)
-  })
-
-  it("Login successfully", async () => {
-    const response = await request(app).post("/api/v1/auth/login").send({
-      email: "alice@example.com",
-      password: "alice",
-    })
-    expect(response.status).toBe(StatusCodes.OK)
-  })
-})
-
-describe("POST /logout - logout", () => {
-  it("Logout successfully", async () => {
-    const response = await request(app).post("/api/v1/auth/logout")
-    expect(response.status).toBe(StatusCodes.OK)
   })
 })

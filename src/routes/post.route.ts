@@ -18,7 +18,7 @@ const router = Router()
 router.use(authMiddleware)
 
 router.get("/", getPosts)
-router.get("/:id", getPostWithId)
+router.get("/:id", doesPostExistWithId, getPostWithId)
 router.post("/", validatedPost, addPost)
 router.patch("/:id", doesPostExistWithId, validatedPost, editPostWithId)
 router.delete("/:id", doesPostExistWithId, removePostWithId)

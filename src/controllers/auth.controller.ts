@@ -8,6 +8,7 @@ import { config } from "../utils/config/env"
 import { authType } from "../types/auth.type"
 import prisma from "../utils/config/prismaClient"
 
+// POST /api/v1/auth/login - user login
 export const login = async (
   request: Request,
   response: Response,
@@ -49,6 +50,7 @@ export const login = async (
   }
 }
 
+// POST /api/v1/auth/logout - user logout
 export const logout = async (
   request: Request,
   response: Response,
