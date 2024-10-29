@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'README.md'
+      - "README.md"
 
 jobs:
   build:
@@ -32,11 +32,16 @@ jobs:
       - name: Copy .env.example to .env
         run: cp .env.example .env
 
+      - name: Install required packages
+        run: npm install
+
       - name: List files in scripts directory
         run: ls -la scripts
 
-      - name: Make run-integration.sh executable
-        run: chmod +x scripts/run-integration.sh
+      - name: Make scripts executable
+        run: |
+          chmod +x scripts/run-integration.sh
+          chmod +x scripts/wait-for-it.sh
 
       - name: Run tests
         run: ./scripts/run-integration.sh
